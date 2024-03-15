@@ -1,7 +1,8 @@
 import java.util.Scanner;
 
 public class Demineur extends Plateau{
-
+    private boolean gameOver;
+    private int score;
 
     public void affiche(){
         System.out.println("JEU DU DEMINEUR");
