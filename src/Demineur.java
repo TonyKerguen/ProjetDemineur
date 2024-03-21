@@ -1,8 +1,27 @@
 import java.util.Scanner;
 
 public class Demineur extends Plateau{
-    private boolean gameOver;
+
+    private boolean gameOver = false;
     private int score;
+
+    public Demineur(int nbLignes, int nbColonnes, int pourcentageDeBombes) {
+        super(nbLignes, nbColonnes, pourcentageDeBombes);
+        this.score = 0;
+    }
+
+    public int getScore(){
+        return this.score;
+    }
+
+    public void reveler(int x, int y) {
+        super.getCase(x, y).setEstDecouverte(true);
+    }
+
+    public int marquer(int x, int y) {
+        super.getCase(x, y).setEstMarquee(true);
+        return 10;
+    }
 
     public void affiche(){
         System.out.println("JEU DU DEMINEUR");
