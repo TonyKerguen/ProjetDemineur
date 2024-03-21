@@ -44,7 +44,7 @@ public class Case {
     }
 
     public boolean reveler() {
-        if(!this.estDecouverte()) {
+        if(!this.estDecouverte() && !this.estMarquee()) {
             this.setEstDecouverte(true);
             return true;
         }
