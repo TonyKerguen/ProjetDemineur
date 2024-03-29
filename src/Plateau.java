@@ -8,50 +8,39 @@ public class Plateau{
     protected int nbColonnes;
     protected int pourcentageDeBombes;
     protected int nbBombes;
-    private List<CaseIntelligente> lePateau;
+    private CaseIntelligente[][] lePateau;
 
     public Plateau(int nbLignes, int nbColonnes, int pourcentageDeBombes) {
         this.nbLignes = nbLignes;
         this.nbColonnes = nbColonnes;
         this.pourcentageDeBombes = pourcentageDeBombes;
+        creerLesCasesVide();
         this.nbBombes = 0;
-        this.lePateau = new ArrayList<>();
+        poseDesBombesAleatoirement();
     }
 
-    public void rendLesCasesIntelligentes() {
-        for(int x = 0; x < this.getNbLignes(); x++) {
-            for(int y = 0; y < this.getNbColonnes(); y++) {
-                if(x > 0) {
-                    this.lePateau.get(x*this.getNbColonnes()+y).ajouteVoisine(this.getCase(x-1, y));
-                }
-                if(y > 0) {
-                    this.lePateau.get(x*this.getNbColonnes()+y).ajouteVoisine(this.getCase(x, y-1));
-                }
-                if(x > 0 && y > 0) {
-                    this.lePateau.get(x*this.getNbColonnes()+y).ajouteVoisine(this.getCase(x-1, y-1));
-                }
-                if(x < this.getNbLignes()) {
-                    this.lePateau.get(x*this.getNbColonnes()+y).ajouteVoisine(this.getCase(x+1, y));
-                }
-                if(y < this.getNbColonnes()) {
-                    this.lePateau.get(x*this.getNbColonnes()+y).ajouteVoisine(this.getCase(x, y+1));
-                }
-                if(x < this.getNbLignes() && y < this.getNbColonnes()) {
-                    this.lePateau.get(x*this.getNbColonnes()+y).ajouteVoisine(this.getCase(x+1, y+1));
-                }
-                if(x > 0 && y < this.getNbColonnes()) {
-                    this.lePateau.get(x*this.getNbColonnes()+y).ajouteVoisine(this.getCase(x-1, y+1));
-                }
-                if(y > 0 && x < this.getNbLignes()) {
-                    this.lePateau.get(x*this.getNbColonnes()+y).ajouteVoisine(this.getCase(x+1, y-1));
-                }
+    private void creerLesCasesVide() {
+        lePateau = new CaseIntelligente[nbLignes][nbColonnes];
+        for(int x = 0; x < nbLignes; x++) {
+            for(int y = 0; y < nbLignes; y++) {
+                lePateau[x][y] = new CaseIntelligente();
             }
         }
+        rendLesCasesIntelligentes();
     }
 
-    public void creerLesCasesVide() {
-        for(int i = 0; i < this.getNbLignes()*this.getNbColonnes(); i++) {
-            lePateau.add(new CaseIntelligente());
+    private void rendLesCasesIntelligentes() {
+        for(int x = 0; x < nbLignes; x++) {
+            for(int y = 0; y < nbLignes; y++) {
+                for(int dx = -1; dx <= 1; dx++) {
+                    for(int dy = -1; dy <= 1; dy++) {
+                        try {
+                            lePateau[x][y].ajouteVoisine(lePateau[x + dx][y + dy]);
+                        } catch (ArrayIndexOutOfBoundsException ignored) {
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -80,28 +69,32 @@ public class Plateau{
     }
 
     public CaseIntelligente getCase(int numLigne, int numColonne) {
-        return this.lePateau.get(numLigne*this.getNbColonnes()+numColonne);
+        return lePateau[numLigne][numColonne];
     }
 
     public int getNbCasesMarquees() {
         int NbCasesMarquees = 0;
-        for(Case c:this.lePateau) {
-            if(c.estMarquee()) {
-                NbCasesMarquees += 1;
+        for(int x = 0; x < nbLignes; x++) {
+            for(int y = 0; y < nbLignes; y++) {
+                if(lePateau[x][y].estMarquee()) {
+                    NbCasesMarquees += 1;
+                }
             }
         }
         return NbCasesMarquees;
     }
 
     public void poseBombe(int x, int y) {
-        if(x + 1 * y + 1 > this.lePateau.size() && !(this.getCase(x, y).contientUneBombe())) {
-            this.lePateau.get(x*this.getNbColonnes()+y).setContientUneBombe(true);
+        if(x <= nbLignes && y <= nbColonnes && !(this.getCase(x, y).contientUneBombe())) {
+            lePateau[x][y].setContientUneBombe(true);
         }
     }
 
     public void reset() {
-        for(Case c:this.lePateau) {
-            c.reset();
+        for(int x = 0; x < nbLignes; x++) {
+            for(int y = 0; y < nbLignes; y++) {
+                lePateau[x][y].reset();
+            }
         }
     }
 
