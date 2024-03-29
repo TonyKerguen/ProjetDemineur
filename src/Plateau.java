@@ -48,7 +48,7 @@ public class Plateau{
         Random generateur = new Random();
         for (int x = 0; x < this.getNbLignes(); x++){
             for (int y = 0; y < this.getNbColonnes(); y++){
-                if (generateur.nextInt(100)+1 < this.pourcentageDeBombes){
+                if (generateur.nextInt(100)+1 < this.pourcentageDeBombes && !lePateau[x][y].contientUneBombe()){
                     this.poseBombe(x, y);
                     this.nbBombes = this.nbBombes + 1;
                 }
@@ -82,6 +82,18 @@ public class Plateau{
             }
         }
         return NbCasesMarquees;
+    }
+
+    public int getNbCasesRevele() {
+        int NbCasesRevele = 0;
+        for(int x = 0; x < nbLignes; x++) {
+            for(int y = 0; y < nbLignes; y++) {
+                if(lePateau[x][y].estDecouverte()) {
+                    NbCasesRevele += 1;
+                }
+            }
+        }
+        return NbCasesRevele;
     }
 
     public void poseBombe(int x, int y) {

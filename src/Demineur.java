@@ -3,6 +3,8 @@ import java.util.Scanner;
 public class Demineur extends Plateau{
 
     private boolean gameOver = false;
+    private boolean estGagnee = false;
+    private boolean estPerdue = false;
     private int score;
 
     public Demineur(int nbLignes, int nbColonnes, int pourcentageDeBombes) {
@@ -16,10 +18,14 @@ public class Demineur extends Plateau{
 
     public void reveler(int x, int y) {
         super.getCase(x, y).setEstDecouverte(true);
+        if (super.getCase(x, y).contientUneBombe()) {
+            this.estPerdue = true;
+            this.gameOver = true;
+        }
     }
 
     public int marquer(int x, int y) {
-        super.getCase(x, y).setEstMarquee(true);
+        super.getCase(x, y).marquer();
         return 10;
     }
 
@@ -77,7 +83,7 @@ public class Demineur extends Plateau{
         this.affiche();
         Scanner scan = new Scanner(System.in).useDelimiter("\n");
 
-        while (!this.estPerdue() || this.estGagnee()){
+        while (!this.estPerdue || this.estGagnee){
             System.out.println("Entrer une instruction de la forme R 3 2 ou M 3 2\npour Révéler/Marquer la case à la ligne 3 et à la colonne 2");
             String [] s = scan.nextLine().split(" ");
             String action = s[0];
@@ -88,12 +94,30 @@ public class Demineur extends Plateau{
             else if (action.equals("R") || action.equals("r"))
                 this.reveler(x, y);
             this.affiche();
+            System.out.println(super.getNbCasesMarquees());
+            System.out.println(super.getNbCasesRevele());
+            System.out.println(super.getNbColonnes()*super.getNbLignes());
+            if(super.getNbCasesMarquees() + super.getNbCasesRevele() == super.getNbColonnes()*super.getNbLignes()) {
+                this.estGagnee = true;
+            }
+            
         }
+        
         if (this.gameOver){
             System.out.println("Oh !!! Vous avez perdu !");
         }
         else{
             System.out.println("Bravo !! Vous avez gagné !");
         }
+        this.score+=10;
+        scan.close();
+    }
+
+    public boolean estPerdue(){
+        return this.estPerdue;
+    }
+
+    public boolean estGagnee(){
+        return this.estGagnee;
     }
 }

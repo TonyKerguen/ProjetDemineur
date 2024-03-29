@@ -72,6 +72,7 @@ public class DemineurGraphique extends Application {
         this.leDemineur.poseDesBombesAleatoirement();
         this.maj_de_la_grille();
         this.maj_des_infos();
+        
     }
     
     public void desactiver(){
@@ -106,7 +107,7 @@ public class DemineurGraphique extends Application {
             }  
     }
     
-    // public static void main(String args[]){
-        // Application.launch(args);
-    // }
+    public static void main(String args[]){
+        Application.launch(args);
+    }
 }
